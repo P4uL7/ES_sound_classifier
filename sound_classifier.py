@@ -66,12 +66,21 @@ test_loss_score = model.evaluate(x_test, y_test)
 print(train_loss_score)
 print(test_loss_score)
 
+classes = ["air_conditioner", "car_horn", "children_playing",
+           "dog_bark", "drilling", "engine_idling",
+           "gun_shot", "jackhammer", "siren", "street_music"]
 predicted_classes = model.predict_classes(x_test)
-submissions = pd.DataFrame({"SoundID": list(range(1, len(predicted_classes) + 1)), "Label": predicted_classes})
+predicted_explanations = []
+for x in predicted_classes:
+    predicted_explanations.append(classes[x])
+
+data = {"SoundID": list(range(1, len(predicted_classes) + 1)), "Label": predicted_classes,
+        "Explanation": predicted_explanations}
+submissions = pd.DataFrame(data)
 submissions.to_csv("submission.csv", index=False, header=True)
 
 print("DONE")
 
-# 1st run
-# [0.10184711575173036, 0.970487654209137]
-# [1.342636020949807, 0.6869773268699646]
+# results
+# [0.061496452033782796, 0.9820139408111572]
+# [1.0961064827765294, 0.7335723042488098]
