@@ -66,6 +66,17 @@ test_loss_score = model.evaluate(x_test, y_test)
 print(train_loss_score)
 print(test_loss_score)
 
+# ~~~~~~~~~~~~~~~~~  activations & heatmaps  ~~~~~~~~~~~~~~~~~
+from keract import get_activations, display_activations, display_heatmaps
+
+for i in range(837):
+    eval_item = x_test[i:i + 1]
+    activations = get_activations(model, eval_item, "conv2d_2")
+    display_activations(activations, save=False)
+    display_heatmaps(activations, eval_item, save=False)
+    # TODO interpret heatmap?
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 classes = ["air_conditioner", "car_horn", "children_playing",
            "dog_bark", "drilling", "engine_idling",
            "gun_shot", "jackhammer", "siren", "street_music"]
