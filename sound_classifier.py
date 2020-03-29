@@ -66,17 +66,6 @@ test_loss_score = model.evaluate(x_test, y_test)
 print(train_loss_score)
 print(test_loss_score)
 
-# ~~~~~~~~~~~~~~~~~  activations & heatmaps  ~~~~~~~~~~~~~~~~~
-from keract import get_activations, display_activations, display_heatmaps
-
-for i in range(837):
-    eval_item = x_test[i:i + 1]
-    activations = get_activations(model, eval_item, "conv2d_2")
-    display_activations(activations, save=False)
-    display_heatmaps(activations, eval_item, save=False)
-    # TODO interpret heatmap?
-# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
 classes = ["air_conditioner", "car_horn", "children_playing",
            "dog_bark", "drilling", "engine_idling",
            "gun_shot", "jackhammer", "siren", "street_music"]
@@ -85,13 +74,30 @@ predicted_explanations = []
 for x in predicted_classes:
     predicted_explanations.append(classes[x])
 
+# ~~~~~~~~~~~~~~~~~  activations & heatmaps  ~~~~~~~~~~~~~~~~~
+from keract import get_activations, display_activations, display_heatmaps
+
+for i in range(837):
+    eval_item = x_test[i:i + 1]
+    activations = get_activations(model, eval_item, "conv2d_1")
+    # display_activations(activations, save=False)
+    display_heatmaps(activations, eval_item, "./heatmaps/" + str(predicted_explanations[i]) + "/heatmap" + str(i),
+                     save=True)
+    print("#" + str(i) + ": ", predicted_explanations[i])
+    # TODO interpret heatmap?
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 data = {"SoundID": list(range(1, len(predicted_classes) + 1)), "Label": predicted_classes,
         "Explanation": predicted_explanations}
 submissions = pd.DataFrame(data)
-submissions.to_csv("submission.csv", index=False, header=True)
+submissions.to_csv("submission2.csv", index=False, header=True)
 
 print("DONE")
 
 # results
 # [0.061496452033782796, 0.9820139408111572]
 # [1.0961064827765294, 0.7335723042488098]
+
+# new
+# [0.10706214858587784, 0.9680810570716858]
+# [0.9786004304058022, 0.7574671506881714]
